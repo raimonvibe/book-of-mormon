@@ -1,0 +1,26 @@
+{
+  "name": "Book of Mormon Reader",
+  "short_name": "Book of Mormon",
+  "description": "Read the Book of Mormon — Lamoni Edition with search and chapter navigation",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f1e8",
+  "theme_color": "#5e5342",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/social.png",
+      "sizes": "444x513",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/social.png",
+      "sizes": "444x513",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["books", "education", "lifestyle"],
+  "lang": "en-US"
+}
