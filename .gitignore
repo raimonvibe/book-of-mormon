@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+.env
+.env.local
+*.log
+.DS_Store
+
+# Source PDF (32MB) — run `npm run extract` locally after adding the PDF
+bookofmormon00lamo_bw.pdf
+data/bom-raw.txt
