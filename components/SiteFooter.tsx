@@ -8,49 +8,57 @@ const SOCIAL_LINKS = [
     href: 'https://x.com/raimonvibe/',
     label: 'X',
     icon: 'fa-brands fa-x-twitter',
-    hover: 'hover:bg-blue-500',
+    className:
+      'bg-beige-700 hover:bg-blue-500 dark:bg-slate-700 dark:hover:bg-blue-500',
   },
   {
     href: 'https://www.youtube.com/channel/UCDGDNuYb2b2Ets9CYCNVbuA/videos/',
     label: 'YouTube',
     icon: 'fab fa-youtube',
-    hover: 'hover:bg-red-500',
+    className:
+      'bg-beige-700 hover:bg-red-500 dark:bg-red-900/80 dark:hover:bg-red-500',
   },
   {
     href: 'https://www.tiktok.com/@raimonvibe/',
     label: 'TikTok',
     icon: 'fab fa-tiktok',
-    hover: 'hover:bg-black',
+    className:
+      'bg-beige-700 hover:bg-neutral-900 dark:bg-neutral-800 dark:hover:bg-neutral-500',
   },
   {
     href: 'https://www.instagram.com/raimonvibe/',
     label: 'Instagram',
     icon: 'fab fa-instagram',
-    hover: 'hover:bg-pink-500',
+    className:
+      'bg-beige-700 hover:bg-pink-500 dark:bg-pink-900/80 dark:hover:bg-pink-500',
   },
   {
     href: 'https://medium.com/@raimonvibe/',
     label: 'Medium',
     icon: 'fab fa-medium',
-    hover: 'hover:bg-green-600',
+    className:
+      'bg-beige-700 hover:bg-green-600 dark:bg-green-900/80 dark:hover:bg-green-500',
   },
   {
     href: 'https://github.com/raimonvibe/',
     label: 'GitHub',
     icon: 'fab fa-github',
-    hover: 'hover:bg-gray-700',
+    className:
+      'bg-beige-700 hover:bg-neutral-700 dark:bg-neutral-700 dark:hover:bg-neutral-400',
   },
   {
     href: 'https://www.linkedin.com/in/raimonvibe/',
     label: 'LinkedIn',
     icon: 'fab fa-linkedin-in',
-    hover: 'hover:bg-blue-600',
+    className:
+      'bg-beige-700 hover:bg-blue-600 dark:bg-blue-900/80 dark:hover:bg-blue-500',
   },
   {
     href: 'https://www.facebook.com/profile.php?id=61563450007849',
     label: 'Facebook',
     icon: 'fab fa-facebook-f',
-    hover: 'hover:bg-blue-700',
+    className:
+      'bg-beige-700 hover:bg-blue-700 dark:bg-blue-950/80 dark:hover:bg-blue-600',
   },
 ] as const
 
@@ -103,9 +111,9 @@ export default function SiteFooter({ bookCount, chapterCount }: SiteFooterProps)
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors duration-200 bg-beige-700 dark:bg-brown-800 text-white shadow-md ${link.hover}`}
+                    className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors duration-200 text-white shadow-md [&_i]:text-white ${link.className}`}
                   >
-                    <i className={`${link.icon} text-white`} aria-hidden="true" />
+                    <i className={link.icon} aria-hidden="true" />
                     <span className="sr-only">{link.label}</span>
                   </a>
                 </li>
