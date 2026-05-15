@@ -8,6 +8,7 @@ import BookMenu from '@/components/BookMenu'
 import ChapterOverview from '@/components/ChapterOverview'
 import ScriptureReader from '@/components/ScriptureReader'
 import SearchPanel from '@/components/SearchPanel'
+import SiteFooter from '@/components/SiteFooter'
 
 interface Chapter {
   id: string
@@ -112,7 +113,12 @@ export default function Home() {
     (chapterIdx < selectedBook.chapters.length - 1 || bookIdx < data.books.length - 1)
 
   if (!data) {
-    return <LoadingScreen />
+    return (
+      <>
+        <LoadingScreen />
+        <SiteFooter />
+      </>
+    )
   }
 
   const totalChapters = data.books.reduce((n, b) => n + b.chapters.length, 0)
@@ -183,9 +189,7 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="text-center py-8 font-sans text-sm text-beige-600 dark:text-brown-500">
-        {data.title} · Lamoni Edition · {data.books.length} books · {totalChapters} chapters
-      </footer>
+      <SiteFooter bookCount={data.books.length} chapterCount={totalChapters} />
     </>
   )
 }
