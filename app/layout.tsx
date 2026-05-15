@@ -3,10 +3,23 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import './globals.css'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://book-of-mormon.vercel.app'),
   title: 'Book of Mormon Reader',
   description:
     'Read the Book of Mormon — Lamoni Edition. Search scripture, browse books and chapters, light and dark themes.',
   keywords: ['Book of Mormon', 'Scripture', 'Lamoni', 'Nephi', 'Alma'],
+  openGraph: {
+    title: 'Book of Mormon Reader',
+    description:
+      'Read the Book of Mormon — Lamoni Edition with search, chapter navigation, and beautiful reading themes.',
+    images: [{ url: '/mormon.jpg', width: 1200, height: 1600, alt: 'The Book of Mormon' }],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Book of Mormon Reader',
+    images: ['/mormon.jpg'],
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

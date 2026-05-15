@@ -1,8 +1,9 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { BookOpen, Loader2 } from 'lucide-react'
 import AppHeader from '@/components/AppHeader'
+import LoadingScreen from '@/components/LoadingScreen'
+import WelcomeHero from '@/components/WelcomeHero'
 import BookMenu from '@/components/BookMenu'
 import ChapterOverview from '@/components/ChapterOverview'
 import ScriptureReader from '@/components/ScriptureReader'
@@ -111,16 +112,7 @@ export default function Home() {
     (chapterIdx < selectedBook.chapters.length - 1 || bookIdx < data.books.length - 1)
 
   if (!data) {
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-beige-600 dark:text-brown-400" />
-          <p className="font-sans text-lg text-beige-700 dark:text-brown-300">
-            Loading the Book of Mormon...
-          </p>
-        </div>
-      </main>
-    )
+    return <LoadingScreen />
   }
 
   const totalChapters = data.books.reduce((n, b) => n + b.chapters.length, 0)
@@ -157,22 +149,12 @@ export default function Home() {
 
           <div>
             {view === 'overview' && (
-              <div className="card-surface p-6 md:p-10 text-center">
-                <BookOpen className="w-14 h-14 mx-auto mb-4 text-beige-700 dark:text-brown-300" />
-                <h2 className="text-3xl md:text-4xl font-display font-bold text-beige-900 dark:text-brown-50 mb-3">
-                  {data.title}
-                </h2>
-                <p className="font-sans text-beige-600 dark:text-brown-400 max-w-xl mx-auto mb-6">
-                  {data.edition}
-                </p>
-                <p className="font-sans text-sm text-beige-500 dark:text-brown-500">
-                  {data.books.length} books · {totalChapters} chapters · Search across all
-                  verses
-                </p>
-                <p className="mt-8 font-sans text-beige-700 dark:text-brown-300">
-                  Select a book from the menu to begin reading.
-                </p>
-              </div>
+              <WelcomeHero
+                title={data.title}
+                edition={data.edition}
+                bookCount={data.books.length}
+                chapterCount={totalChapters}
+              />
             )}
 
             {view === 'chapters' && selectedBook && (
