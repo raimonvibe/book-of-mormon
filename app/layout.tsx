@@ -3,7 +3,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import './globals.css'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://book-of-mormon.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://book-of-mormon-tan.vercel.app'),
   title: 'Book of Mormon Reader',
   description:
     'Read the Book of Mormon — Lamoni Edition. Search scripture, browse books and chapters, light and dark themes.',
