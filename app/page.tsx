@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import AppHeader from '@/components/AppHeader'
 import LoadingScreen from '@/components/LoadingScreen'
 import WelcomeHero from '@/components/WelcomeHero'
+import OverviewBookGrid from '@/components/OverviewBookGrid'
 import BookMenu from '@/components/BookMenu'
 import ChapterOverview from '@/components/ChapterOverview'
 import ScriptureReader from '@/components/ScriptureReader'
@@ -139,9 +140,9 @@ export default function Home() {
       />
 
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
-        <div className="lg:grid lg:grid-cols-[280px_1fr] lg:gap-8">
+        <div className="lg:grid lg:grid-cols-[280px_1fr] lg:gap-8 lg:items-start">
           <aside
-            className={`lg:block ${menuOpen ? 'block' : 'hidden'} mb-6 lg:mb-0 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)]`}
+            className={`lg:block ${menuOpen ? 'block' : 'hidden'} mb-6 lg:mb-0 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-hidden`}
           >
             <BookMenu
               books={data.books}
@@ -153,14 +154,17 @@ export default function Home() {
             />
           </aside>
 
-          <div>
+          <div className="flex flex-col gap-6 min-w-0">
             {view === 'overview' && (
-              <WelcomeHero
-                title={data.title}
-                edition={data.edition}
-                bookCount={data.books.length}
-                chapterCount={totalChapters}
-              />
+              <>
+                <WelcomeHero
+                  title={data.title}
+                  edition={data.edition}
+                  bookCount={data.books.length}
+                  chapterCount={totalChapters}
+                />
+                <OverviewBookGrid books={data.books} onSelectBook={handleSelectBook} />
+              </>
             )}
 
             {view === 'chapters' && selectedBook && (
