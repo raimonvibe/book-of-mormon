@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-const EMBED_CODE = "iLix2qoGXqOrDKHLmjS82SNn";
+const EMBED_CODE = "prayer-chat-bot-iLix2qoGXqOrDKHLmjS82SNn";
 const BASE_URL = "https://chatbot-java-spring-ai.onrender.com";
 
 export default function PrayerChatBot() {
