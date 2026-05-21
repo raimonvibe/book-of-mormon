@@ -144,9 +144,25 @@ def chapter_number_from_match(match: re.Match) -> str:
 VERSE_START_RE = re.compile(r"^(\d+)\s*[\^♦IJTl]?\s*")
 PAGE_HEADER_RE = re.compile(
     r"^(?:THE |FIRST |SECOND |THIRD |FOURTH |BOOK OF |WORDS OF |CHAP\.|"
-    r"\[chap\.|\d+\s*$|SOOK OF|NEFHl|THE SON OF|WHO IS THE)",
+    r"\[chap\.|\d{3,}\s*$|SOOK OF|NEFHl|THE SON OF|WHO IS THE)",
     re.IGNORECASE,
 )
+# Back-of-book index starts after scripture ends (Lamoni PDF).
+BACK_MATTER_RE = re.compile(
+    r"\n\s*THE END\.|\n\s*Index\.|\n\s*INDEX\s*\n",
+    re.IGNORECASE,
+)
+# Index lines: page refs and cross-refs, not scripture verses.
+INDEX_LINE_RE = re.compile(
+    r"^\d{2,4}\s*,\s*\d{2,4}|"
+    r"teaches\s+(?:atonement|people)|"
+    r"goes to\s+(?:Ani-Anti|Middoni|Jerusalem)|"
+    r"Princeton Theological|"
+    r"^\d{4,}\s+\d{4,}\s*$",
+    re.IGNORECASE,
+)
+CHAP_MARKER_ONLY_RE = re.compile(r"^\.?\]?\s*,?\s*$")
+MAX_VERSE_NUMBER = 50
 FORM_FEED = "\x0c"
 
 
@@ -167,7 +183,8 @@ def clean_line(line: str) -> str:
         return ""
     if PAGE_HEADER_RE.match(line):
         return ""
-    if re.match(r"^\d+$", line):
+    # Page numbers in headers (e.g. 777); keep 1–2 digit lines as verse markers.
+    if re.match(r"^\d{3,}$", line):
         return ""
     return line
 
@@ -176,6 +193,27 @@ def normalize_text(text: str) -> str:
     text = text.replace(FORM_FEED, "\n")
     text = re.sub(r"\r\n?", "\n", text)
     return text
+
+
+def trim_back_matter(text: str) -> str:
+    """Strip index and other material after the closing 'THE END.' marker."""
+    match = BACK_MATTER_RE.search(text)
+    if match:
+        return text[: match.start()]
+    return text
+
+
+def is_index_verse(verse_num: str, text: str) -> bool:
+    """Detect scripture-index entries mis-parsed as verses."""
+    try:
+        num = int(verse_num)
+    except ValueError:
+        return False
+    if num > MAX_VERSE_NUMBER:
+        return True
+    if INDEX_LINE_RE.search(text):
+        return True
+    return False
 
 
 def find_book_positions(text: str) -> list[tuple[dict, int]]:
@@ -232,8 +270,14 @@ def parse_verses(chapter_body: str) -> list[dict]:
     current_parts: list[str] = []
 
     for line in merged:
+        if re.match(r"^\s*THE END\.?\s*$", line, re.IGNORECASE):
+            break
+
         m = VERSE_START_RE.match(line)
         if m:
+            rest = line[m.end() :].strip()
+            if is_index_verse(m.group(1), rest):
+                break
             if current_num is not None:
                 verses.append(
                     {
@@ -242,7 +286,6 @@ def parse_verses(chapter_body: str) -> list[dict]:
                     }
                 )
             current_num = m.group(1)
-            rest = line[m.end() :].strip()
             current_parts = [rest] if rest else []
         elif current_num is not None:
             current_parts.append(line)
@@ -252,7 +295,11 @@ def parse_verses(chapter_body: str) -> list[dict]:
             {"number": current_num, "text": " ".join(current_parts).strip()}
         )
 
-    return [v for v in verses if v["text"]]
+    return [
+        v
+        for v in verses
+        if v["text"] and not CHAP_MARKER_ONLY_RE.match(v["text"])
+    ]
 
 
 def format_content(verses: list[dict]) -> str:
@@ -305,6 +352,8 @@ def main():
     for i, (book_meta, start) in enumerate(positions):
         end = positions[i + 1][1] if i + 1 < len(positions) else len(text)
         book_text = text[start:end]
+        if i == len(positions) - 1:
+            book_text = trim_back_matter(book_text)
         chapter_blocks = extract_chapter_blocks(book_text)
 
         chapters_out = []
