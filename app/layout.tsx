@@ -1,12 +1,23 @@
 import type { Metadata, Viewport } from 'next'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import PrayerChatBot from "@/components/PrayerChatBot";
+import { getSiteUrl } from '@/lib/site'
 import './globals.css'
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://book-of-mormon-tan.vercel.app'
+const siteUrl = getSiteUrl()
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
   title: 'Book of Mormon Reader',
   description:
     'Read the Book of Mormon — Lamoni Edition. Search scripture, browse books and chapters, light and dark themes.',

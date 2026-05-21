@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronLeft, ChevronRight, Eye, EyeOff, Home, List } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Eye, EyeOff, List } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 interface Chapter {
@@ -13,7 +13,7 @@ interface Chapter {
 interface ScriptureReaderProps {
   bookName: string
   chapter: Chapter
-  onBackToOverview: () => void
+  onBackToChapters: () => void
   onPrevChapter?: () => void
   onNextChapter?: () => void
   hasPrev: boolean
@@ -23,7 +23,7 @@ interface ScriptureReaderProps {
 export default function ScriptureReader({
   bookName,
   chapter,
-  onBackToOverview,
+  onBackToChapters,
   onPrevChapter,
   onNextChapter,
   hasPrev,
@@ -43,11 +43,11 @@ export default function ScriptureReader({
         aria-label="Breadcrumb"
       >
         <button
-          onClick={onBackToOverview}
+          onClick={onBackToChapters}
           className="hover:text-beige-900 dark:hover:text-brown-50 flex items-center gap-1"
         >
-          <Home className="w-4 h-4" />
-          <span className="hidden sm:inline">Overview</span>
+          <List className="w-4 h-4" />
+          <span className="hidden sm:inline">Chapters</span>
         </button>
         <span>/</span>
         <span className="text-beige-800 dark:text-brown-200">{bookName}</span>
@@ -84,7 +84,7 @@ export default function ScriptureReader({
             <ChevronRight className="w-5 h-5" />
           </button>
           <button
-            onClick={onBackToOverview}
+            onClick={onBackToChapters}
             className="flex items-center gap-2 px-3 py-2 rounded-lg font-sans text-sm bg-white/70 hover:bg-white text-beige-800 dark:bg-brown-800/80 dark:hover:bg-brown-700 dark:text-brown-100"
           >
             <List className="w-4 h-4" />
