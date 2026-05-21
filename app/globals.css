@@ -24,15 +24,15 @@
     @apply font-display;
   }
 }
-
-/* ── Prayer Chat Widget overrides ── */
+/* 
+/* ── Prayer Chat Widget overrides ── 
 [id^="prayer-chat-chatbot"] *,
 .prayer-chat-widget *,
 #prayer-chat-container * {
   color: #1a1a1a !important;
 }
 
-/* Input field */
+/* Input field 
 [id^="prayer-chat-chatbot"] input,
 [id^="prayer-chat-chatbot"] textarea {
   background-color: #ffffff !important;
@@ -40,11 +40,11 @@
   border: 1px solid #cccccc !important;
 }
 
-/* Chat window background */
+/* Chat window background 
 [id^="prayer-chat-chatbot"] {
   background-color: #ffffff !important;
   color: #1a1a1a !important;
-}
+} */
 
 @layer components {
   .card-surface {
