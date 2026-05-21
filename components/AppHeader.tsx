@@ -1,6 +1,7 @@
 'use client'
 
 import { BookOpen, Menu, Search, X } from 'lucide-react'
+import Link from 'next/link'
 import ThemeToggle from './ThemeToggle'
 
 interface AppHeaderProps {
@@ -27,18 +28,24 @@ export default function AppHeader({
           >
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-          <BookOpen
-            className="w-8 h-8 shrink-0 text-beige-700 dark:text-brown-300"
-            aria-hidden="true"
-          />
-          <div className="min-w-0">
-            <h1 className="text-lg md:text-2xl font-display font-bold truncate text-beige-900 dark:text-brown-50">
-              The Book of Mormon
-            </h1>
-            <p className="text-xs md:text-sm font-sans truncate text-beige-600 dark:text-brown-400 hidden sm:block">
-              Lamoni Edition · Reorganized Church
-            </p>
-          </div>
+          <Link
+            href="/"
+            className="flex items-center gap-3 min-w-0 rounded-xl transition-colors hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beige-600 dark:focus-visible:outline-brown-400"
+            aria-label="The Book of Mormon — home"
+          >
+            <BookOpen
+              className="w-8 h-8 shrink-0 text-beige-700 dark:text-brown-300"
+              aria-hidden="true"
+            />
+            <div className="min-w-0">
+              <h1 className="text-lg md:text-2xl font-display font-bold truncate text-beige-900 dark:text-brown-50">
+                The Book of Mormon
+              </h1>
+              <p className="text-xs md:text-sm font-sans truncate text-beige-600 dark:text-brown-400 hidden sm:block">
+                Lamoni Edition · Reorganized Church
+              </p>
+            </div>
+          </Link>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
