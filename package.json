@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "extract": "python3 scripts/extract-bom.py",
-    "clean-markers": "python3 scripts/extract-bom.py --clean"
+    "clean-markers": "python3 scripts/extract-bom.py --clean",
+    "clean-fragments": "python3 scripts/extract-bom.py --clean-fragments"
   },
   "dependencies": {
     "@types/node": "^24.10.0",

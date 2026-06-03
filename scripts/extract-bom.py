@@ -179,6 +179,9 @@ _OPENER_LOOKAHEAD = "(?:" + "|".join(re.escape(w) for w in _VERSE_OPENERS) + ")"
 LEADING_MARKER_RE = re.compile(rf"^[\^♦IJTl]+{_OPENER_LOOKAHEAD}")
 # Lone "I" from a split marker line (e.g. "I And it came...").
 LONE_I_MARKER_RE = re.compile(r"^I(?= And | Surely)")
+# Column/page debris at verse start: ". days", ".] our", "[And" (never real openings).
+LEADING_DOT_FRAGMENT_RE = re.compile(r"^\.?\]?\s+(?=[a-z])")
+LEADING_BRACKET_FRAGMENT_RE = re.compile(rf"^\[(?={_OPENER_LOOKAHEAD})")
 PAGE_HEADER_RE = re.compile(
     r"^(?:THE |FIRST |SECOND |THIRD |FOURTH |BOOK OF |WORDS OF |CHAP\.|"
     r"\[chap\.|\d{3,}\s*$|SOOK OF|NEFHl|THE SON OF|WHO IS THE)",
@@ -225,6 +228,24 @@ def strip_leading_verse_markers(text: str) -> str:
         s = LEADING_MARKER_RE.sub("", s, count=1).lstrip()
         s = LONE_I_MARKER_RE.sub("", s, count=1).lstrip()
     return s
+
+
+def strip_leading_column_fragments(text: str) -> str:
+    """Remove PDF column-break prefix only (. ] / [ before continuations)."""
+    if not text:
+        return text
+    prev = None
+    s = text.strip()
+    while prev != s:
+        prev = s
+        s = LEADING_DOT_FRAGMENT_RE.sub("", s, count=1).lstrip()
+        s = LEADING_BRACKET_FRAGMENT_RE.sub("", s, count=1).lstrip()
+    return s
+
+
+def normalize_verse_text(text: str) -> str:
+    """All safe verse-level text cleanups (markers + column fragments)."""
+    return strip_leading_column_fragments(strip_leading_verse_markers(text))
 
 
 def clean_line(line: str) -> str:
@@ -325,30 +346,26 @@ def parse_verses(chapter_body: str) -> list[dict]:
 
         m = VERSE_NUM_RE.match(line)
         if m:
-            rest = strip_leading_verse_markers(line[m.end() :])
+            rest = normalize_verse_text(line[m.end() :])
             if is_index_verse(m.group(1), rest):
                 break
             if current_num is not None:
                 verses.append(
                     {
                         "number": current_num,
-                        "text": strip_leading_verse_markers(
-                            " ".join(current_parts).strip()
-                        ),
+                        "text": normalize_verse_text(" ".join(current_parts).strip()),
                     }
                 )
             current_num = m.group(1)
             current_parts = [rest] if rest else []
         elif current_num is not None:
-            current_parts.append(strip_leading_verse_markers(line))
+            current_parts.append(normalize_verse_text(line))
 
     if current_num is not None:
         verses.append(
             {
                 "number": current_num,
-                "text": strip_leading_verse_markers(
-                    " ".join(current_parts).strip()
-                ),
+                "text": normalize_verse_text(" ".join(current_parts).strip()),
             }
         )
 
@@ -377,14 +394,14 @@ def escape_html(text: str) -> str:
     )
 
 
-def clean_books_verse_markers(books: list[dict]) -> int:
-    """Fix marker prefixes in place; refresh chapter HTML and plainText."""
+def clean_books_verse_text(books: list[dict]) -> int:
+    """Fix marker and column-fragment prefixes in place; refresh chapter HTML."""
     fixed = 0
     for book in books:
         for chapter in book["chapters"]:
             for verse in chapter.get("verses", []):
                 old = verse["text"]
-                new = strip_leading_verse_markers(old)
+                new = normalize_verse_text(old)
                 if new != old:
                     fixed += 1
                     verse["text"] = new
@@ -480,22 +497,22 @@ def main():
 
 
 def clean_existing_data() -> None:
-    """Re-apply marker stripping to book-of-mormon-data.json (no PDF required)."""
+    """Re-apply safe verse text cleanup to book-of-mormon-data.json (no PDF required)."""
     with open(OUT_DATA, encoding="utf-8") as f:
         data = json.load(f)
-    fixed = clean_books_verse_markers(data["books"])
+    fixed = clean_books_verse_text(data["books"])
     OUT_DATA.parent.mkdir(parents=True, exist_ok=True)
     with open(OUT_DATA, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     search_index = build_search_index(data["books"])
     with open(OUT_SEARCH, "w", encoding="utf-8") as f:
         json.dump(search_index, f, ensure_ascii=False)
-    print(f"Cleaned {fixed} verses with leading markers")
+    print(f"Cleaned {fixed} verses (markers + column fragments)")
     print(f"Updated {OUT_DATA} and {OUT_SEARCH}")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] in ("--clean", "clean"):
+    if len(sys.argv) > 1 and sys.argv[1] in ("--clean", "clean", "--clean-fragments", "clean-fragments"):
         clean_existing_data()
     else:
         main()
