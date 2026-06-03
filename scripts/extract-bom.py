@@ -141,7 +141,44 @@ def chapter_number_from_match(match: re.Match) -> str:
     if match.group(3) and not match.group(1) and not match.group(2):
         return match.group(3)
     return match.group(1) or match.group(2) or ""
-VERSE_START_RE = re.compile(r"^(\d+)\s*[\^♦IJTl]?\s*")
+# Verse number at line start; markers may repeat (e.g. "2 JTAnd") or land on the next line ("JAnd").
+VERSE_NUM_RE = re.compile(r"^(\d+)\s*")
+# Strip OCR markers only when glued before known verse openers (not "Therefore", "I, Nephi", etc.).
+_VERSE_OPENERS = (
+    "And ",
+    "For ",
+    "The ",
+    "Now ",
+    "But ",
+    "Yea ",
+    "Behold",
+    "Therefore",
+    "Wherefore",
+    "It ",
+    "They ",
+    "He ",
+    "She ",
+    "We ",
+    "Ye ",
+    "My ",
+    "That ",
+    "Thus ",
+    "After ",
+    "Before ",
+    "When ",
+    "While ",
+    "Then ",
+    "Surely",
+    "O ",
+    "An ",
+    "A ",
+    "I, ",
+    "I And",
+)
+_OPENER_LOOKAHEAD = "(?:" + "|".join(re.escape(w) for w in _VERSE_OPENERS) + ")"
+LEADING_MARKER_RE = re.compile(rf"^[\^♦IJTl]+{_OPENER_LOOKAHEAD}")
+# Lone "I" from a split marker line (e.g. "I And it came...").
+LONE_I_MARKER_RE = re.compile(r"^I(?= And | Surely)")
 PAGE_HEADER_RE = re.compile(
     r"^(?:THE |FIRST |SECOND |THIRD |FOURTH |BOOK OF |WORDS OF |CHAP\.|"
     r"\[chap\.|\d{3,}\s*$|SOOK OF|NEFHl|THE SON OF|WHO IS THE)",
@@ -175,6 +212,19 @@ def ensure_text() -> str:
             check=True,
         )
     return TEXT_FILE.read_text(encoding="utf-8", errors="replace")
+
+
+def strip_leading_verse_markers(text: str) -> str:
+    """Remove pdftotext verse markers (J/I/T/l/^/♦) glued before the next word."""
+    if not text:
+        return text
+    prev = None
+    s = text.strip()
+    while prev != s:
+        prev = s
+        s = LEADING_MARKER_RE.sub("", s, count=1).lstrip()
+        s = LONE_I_MARKER_RE.sub("", s, count=1).lstrip()
+    return s
 
 
 def clean_line(line: str) -> str:
@@ -260,7 +310,7 @@ def parse_verses(chapter_body: str) -> list[dict]:
 
     merged: list[str] = []
     for line in lines:
-        if VERSE_START_RE.match(line) or not merged:
+        if VERSE_NUM_RE.match(line) or not merged:
             merged.append(line)
         else:
             merged[-1] += " " + line
@@ -273,26 +323,33 @@ def parse_verses(chapter_body: str) -> list[dict]:
         if re.match(r"^\s*THE END\.?\s*$", line, re.IGNORECASE):
             break
 
-        m = VERSE_START_RE.match(line)
+        m = VERSE_NUM_RE.match(line)
         if m:
-            rest = line[m.end() :].strip()
+            rest = strip_leading_verse_markers(line[m.end() :])
             if is_index_verse(m.group(1), rest):
                 break
             if current_num is not None:
                 verses.append(
                     {
                         "number": current_num,
-                        "text": " ".join(current_parts).strip(),
+                        "text": strip_leading_verse_markers(
+                            " ".join(current_parts).strip()
+                        ),
                     }
                 )
             current_num = m.group(1)
             current_parts = [rest] if rest else []
         elif current_num is not None:
-            current_parts.append(line)
+            current_parts.append(strip_leading_verse_markers(line))
 
     if current_num is not None:
         verses.append(
-            {"number": current_num, "text": " ".join(current_parts).strip()}
+            {
+                "number": current_num,
+                "text": strip_leading_verse_markers(
+                    " ".join(current_parts).strip()
+                ),
+            }
         )
 
     return [
@@ -318,6 +375,23 @@ def escape_html(text: str) -> str:
         .replace(">", "&gt;")
         .replace('"', "&quot;")
     )
+
+
+def clean_books_verse_markers(books: list[dict]) -> int:
+    """Fix marker prefixes in place; refresh chapter HTML and plainText."""
+    fixed = 0
+    for book in books:
+        for chapter in book["chapters"]:
+            for verse in chapter.get("verses", []):
+                old = verse["text"]
+                new = strip_leading_verse_markers(old)
+                if new != old:
+                    fixed += 1
+                    verse["text"] = new
+            if chapter.get("verses"):
+                chapter["plainText"] = " ".join(v["text"] for v in chapter["verses"])
+                chapter["content"] = format_content(chapter["verses"])
+    return fixed
 
 
 def build_search_index(books: list[dict]) -> list[dict]:
@@ -405,5 +479,23 @@ def main():
     print(f"Wrote {OUT_SEARCH} ({len(search_index)} verses)")
 
 
+def clean_existing_data() -> None:
+    """Re-apply marker stripping to book-of-mormon-data.json (no PDF required)."""
+    with open(OUT_DATA, encoding="utf-8") as f:
+        data = json.load(f)
+    fixed = clean_books_verse_markers(data["books"])
+    OUT_DATA.parent.mkdir(parents=True, exist_ok=True)
+    with open(OUT_DATA, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    search_index = build_search_index(data["books"])
+    with open(OUT_SEARCH, "w", encoding="utf-8") as f:
+        json.dump(search_index, f, ensure_ascii=False)
+    print(f"Cleaned {fixed} verses with leading markers")
+    print(f"Updated {OUT_DATA} and {OUT_SEARCH}")
+
+
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1 and sys.argv[1] in ("--clean", "clean"):
+        clean_existing_data()
+    else:
+        main()
