@@ -18,7 +18,10 @@ export default function AppHeader({
   searchOpen,
 }: AppHeaderProps) {
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-md border-b border-beige-300/60 dark:border-brown-700/50 bg-beige-100/80 dark:bg-brown-950/80">
+    <header
+      data-read-aloud-ignore
+      className="sticky top-0 z-40 backdrop-blur-md border-b border-beige-300/60 dark:border-brown-700/50 bg-beige-100/80 dark:bg-brown-950/80"
+    >
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <button

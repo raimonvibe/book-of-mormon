@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { BookOpen, Search, Sparkles } from 'lucide-react'
+import { BookOpen, Headphones, Search, Sparkles } from 'lucide-react'
 
 interface WelcomeHeroProps {
   title: string
@@ -17,7 +17,7 @@ export default function WelcomeHero({
   chapterCount,
 }: WelcomeHeroProps) {
   return (
-    <section className="card-surface overflow-hidden">
+    <section className="card-surface overflow-hidden" data-read-aloud-block>
       <div className="grid md:grid-cols-[minmax(240px,42%)_1fr]">
         <div className="relative h-52 sm:h-64 md:h-full md:min-h-[340px]">
           <Image
@@ -62,6 +62,10 @@ export default function WelcomeHero({
             <li className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 dark:bg-brown-800/60 text-beige-800 dark:text-brown-200">
               <Search className="w-4 h-4 text-beige-600 dark:text-brown-400" aria-hidden="true" />
               Full-text search
+            </li>
+            <li className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 dark:bg-brown-800/60 text-beige-800 dark:text-brown-200">
+              <Headphones className="w-4 h-4 text-beige-600 dark:text-brown-400" aria-hidden="true" />
+              Listen button
             </li>
           </ul>
 

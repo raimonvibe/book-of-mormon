@@ -66,7 +66,10 @@ export default function SiteFooter({ bookCount, chapterCount }: SiteFooterProps)
   const year = new Date().getFullYear()
 
   return (
-    <footer className="mt-10 border-t border-beige-300/80 dark:border-brown-700/80 bg-gradient-to-b from-transparent to-beige-200/40 dark:to-brown-950/60">
+    <footer
+      data-read-aloud-ignore
+      className="mt-10 border-t border-beige-300/80 dark:border-brown-700/80 bg-gradient-to-b from-transparent to-beige-200/40 dark:to-brown-950/60"
+    >
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-10">
         <div className="grid md:grid-cols-2 gap-10">
           <div>

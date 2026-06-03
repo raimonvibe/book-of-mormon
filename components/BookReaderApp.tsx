@@ -101,6 +101,10 @@ export default function BookReaderApp() {
     if (data) syncFromUrl(data.books)
   }, [data, syncFromUrl])
 
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('read-aloud-stop'))
+  }, [selectedChapterId, view, selectedBookId])
+
   const selectedBook = data?.books.find((b) => b.id === selectedBookId) ?? null
   const selectedChapter =
     selectedBook?.chapters.find((c) => c.id === selectedChapterId) ?? null
@@ -214,9 +218,10 @@ export default function BookReaderApp() {
         onSelectResult={navigateTo}
       />
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
         <div className="lg:grid lg:grid-cols-[280px_1fr] lg:gap-8 lg:items-start">
           <aside
+            data-read-aloud-ignore
             className={`lg:block ${menuOpen ? 'block' : 'hidden'} mb-6 lg:mb-0 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-hidden`}
           >
             <BookMenu

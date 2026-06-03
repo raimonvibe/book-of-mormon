@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { ThemeProvider } from '@/components/ThemeProvider'
-import PrayerChatBot from "@/components/PrayerChatBot";
+import PrayerChatBot from '@/components/PrayerChatBot'
+import ReadAloudToolbar from '@/components/ReadAloudToolbar'
+import ViewportInsetsProvider from '@/components/ViewportInsetsProvider'
 import { getSiteUrl } from '@/lib/site'
 import './globals.css'
 
@@ -83,7 +85,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <ViewportInsetsProvider />
         <ThemeProvider>{children}</ThemeProvider>
+        <ReadAloudToolbar />
         <PrayerChatBot />
       </body>
     </html>

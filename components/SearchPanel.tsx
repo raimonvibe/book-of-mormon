@@ -55,6 +55,7 @@ export default function SearchPanel({ open, onClose, onSelectResult }: SearchPan
 
   return (
     <div
+      data-read-aloud-ignore
       className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-20 md:pt-24"
       role="dialog"
       aria-label="Search scripture"
