@@ -86,7 +86,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ViewportInsetsProvider />
-        <ThemeProvider>{children}</ThemeProvider>
+        <main id="main-content">
+          <ThemeProvider>{children}</ThemeProvider>
+        </main>
         <ReadAloudToolbar />
         <PrayerChatBot />
       </body>

@@ -46,6 +46,13 @@ export function useReadAloud() {
     settingsRef.current = { rate, pitch, volume, voiceURI, voices }
   }, [rate, pitch, volume, voiceURI, voices])
 
+  const getMainRoot = useCallback(() => {
+    if (typeof document === 'undefined') return null
+    const root = document.getElementById('main-content')
+    mainRef.current = root
+    return root
+  }, [])
+
   const loadVoices = useCallback(() => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return
     const list = filterVoices(window.speechSynthesis.getVoices())
@@ -72,7 +79,7 @@ export function useReadAloud() {
       setSupported(false)
       return
     }
-    mainRef.current = document.getElementById('main-content')
+    getMainRoot()
     loadVoices()
     window.speechSynthesis.onvoiceschanged = loadVoices
 
@@ -84,7 +91,7 @@ export function useReadAloud() {
       window.speechSynthesis.cancel()
       window.removeEventListener('read-aloud-stop', onStop)
     }
-  }, [loadVoices, stop])
+  }, [getMainRoot, loadVoices, stop])
 
   const speakChunk = useCallback(
     (index: number) => {
@@ -151,14 +158,15 @@ export function useReadAloud() {
   )
 
   const start = useCallback(
-    (readMode: ReadMode = 'page') => {
-      if (!supported || !mainRef.current) return
+    (readMode: ReadMode = 'page'): boolean => {
+      const root = getMainRoot()
+      if (!supported || !root) return false
 
       sessionRef.current.generation += 1
       sessionRef.current.stopped = false
       sessionRef.current.paused = false
       window.speechSynthesis.cancel()
-      clearChunkHighlights(mainRef.current)
+      clearChunkHighlights(root)
 
       let list: ReadChunk[] = []
       let activeMode: ReadMode = readMode
@@ -170,10 +178,10 @@ export function useReadAloud() {
       }
 
       if (activeMode === 'page') {
-        list = getReadableChunks(mainRef.current)
+        list = getReadableChunks(root)
       }
 
-      if (!list.length) return
+      if (!list.length) return false
 
       setMode(activeMode)
       chunksRef.current = list
@@ -182,8 +190,9 @@ export function useReadAloud() {
       setCurrentIndex(0)
 
       window.setTimeout(() => speakChunk(0), 50)
+      return true
     },
-    [supported, speakChunk],
+    [supported, speakChunk, getMainRoot],
   )
 
   const pause = useCallback(() => {

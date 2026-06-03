@@ -218,7 +218,7 @@ export default function BookReaderApp() {
         onSelectResult={navigateTo}
       />
 
-      <main id="main-content" className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
         <div className="lg:grid lg:grid-cols-[280px_1fr] lg:gap-8 lg:items-start">
           <aside
             data-read-aloud-ignore
@@ -268,7 +268,7 @@ export default function BookReaderApp() {
             )}
           </div>
         </div>
-      </main>
+      </div>
 
       <SiteFooter bookCount={data.books.length} chapterCount={totalChapters} />
     </>

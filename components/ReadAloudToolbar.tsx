@@ -21,6 +21,7 @@ const SPEEDS = [0.75, 1, 1.25, 1.5]
 export default function ReadAloudToolbar() {
   const [open, setOpen] = useState(false)
   const [statusMessage, setStatusMessage] = useState('')
+  const [hint, setHint] = useState('')
 
   const {
     supported,
@@ -73,6 +74,37 @@ export default function ReadAloudToolbar() {
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [start, stop, togglePlayPause, status])
+
+  const handleStart = (readMode: 'page' | 'selection') => {
+    const wasActive = isActive
+    if (wasActive) stop()
+    window.setTimeout(() => {
+      const ok = start(readMode)
+      if (!ok) {
+        setHint(
+          readMode === 'selection'
+            ? 'Highlight some text on the page first, then try again.'
+            : 'No readable content found on this page yet.',
+        )
+      } else {
+        setHint('')
+      }
+    }, wasActive ? 100 : 0)
+  }
+
+  const handlePlayPause = () => {
+    if (status === 'idle') {
+      const ok = start('page')
+      if (!ok) {
+        setHint('No readable content found on this page yet.')
+      } else {
+        setHint('')
+      }
+    } else {
+      setHint('')
+      togglePlayPause()
+    }
+  }
 
   if (!supported) return null
 
@@ -131,6 +163,15 @@ export default function ReadAloudToolbar() {
             </div>
 
             <div className="space-y-4 p-4">
+              {hint && (
+                <p
+                  role="status"
+                  className="rounded-xl border border-amber-300/80 bg-amber-50 px-3 py-2 text-xs font-sans text-amber-900 dark:border-amber-700/50 dark:bg-amber-950/40 dark:text-amber-100"
+                >
+                  {hint}
+                </p>
+              )}
+
               {isActive && (
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs font-sans text-beige-600 dark:text-brown-400">
@@ -167,7 +208,7 @@ export default function ReadAloudToolbar() {
 
                 <button
                   type="button"
-                  onClick={togglePlayPause}
+                  onClick={handlePlayPause}
                   className="flex min-h-14 min-w-14 items-center justify-center rounded-full listen-play-btn text-white shadow-lg transition-opacity hover:opacity-90"
                   aria-label={
                     status === 'playing'
@@ -208,10 +249,7 @@ export default function ReadAloudToolbar() {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    if (isActive) stop()
-                    window.setTimeout(() => start('page'), isActive ? 100 : 0)
-                  }}
+                  onClick={() => handleStart('page')}
                   className={`min-h-11 rounded-xl px-3 text-xs font-medium font-sans transition-colors ${
                     mode === 'page' && isActive
                       ? 'listen-play-btn text-white'
@@ -222,10 +260,7 @@ export default function ReadAloudToolbar() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    if (isActive) stop()
-                    window.setTimeout(() => start('selection'), isActive ? 100 : 0)
-                  }}
+                  onClick={() => handleStart('selection')}
                   className={`min-h-11 rounded-xl px-3 text-xs font-medium font-sans transition-colors ${
                     mode === 'selection' && isActive
                       ? 'listen-play-btn text-white'
