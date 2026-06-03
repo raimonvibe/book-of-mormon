@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   clearChunkHighlights,
+  clearSelectionCache,
   filterVoices,
   getReadableChunks,
   getSelectionChunk,
   highlightChunk,
+  updateSelectionCache,
   type ReadChunk,
 } from '@/lib/readAloud'
 
@@ -86,10 +88,15 @@ export function useReadAloud() {
     const onStop = () => stop()
     window.addEventListener('read-aloud-stop', onStop)
 
+    const onSelectionChange = () => updateSelectionCache()
+    document.addEventListener('selectionchange', onSelectionChange)
+
     return () => {
       window.speechSynthesis.onvoiceschanged = null
       window.speechSynthesis.cancel()
       window.removeEventListener('read-aloud-stop', onStop)
+      document.removeEventListener('selectionchange', onSelectionChange)
+      clearSelectionCache()
     }
   }, [getMainRoot, loadVoices, stop])
 
@@ -173,11 +180,10 @@ export function useReadAloud() {
 
       if (readMode === 'selection') {
         const selected = getSelectionChunk()
-        if (selected) list = [selected]
-        else activeMode = 'page'
-      }
-
-      if (activeMode === 'page') {
+        if (!selected) return false
+        list = [selected]
+        activeMode = 'selection'
+      } else {
         list = getReadableChunks(root)
       }
 

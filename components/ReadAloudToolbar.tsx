@@ -260,6 +260,7 @@ export default function ReadAloudToolbar() {
                 </button>
                 <button
                   type="button"
+                  onPointerDown={(e) => e.preventDefault()}
                   onClick={() => handleStart('selection')}
                   className={`min-h-11 rounded-xl px-3 text-xs font-medium font-sans transition-colors ${
                     mode === 'selection' && isActive

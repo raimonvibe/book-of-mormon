@@ -104,20 +104,64 @@ export function getReadableChunks(root: HTMLElement): ReadChunk[] {
   return chunks
 }
 
-export function getSelectionChunk(): ReadChunk | null {
-  const selection = window.getSelection()
-  if (!selection || selection.isCollapsed) return null
+type SelectionCacheEntry = {
+  text: string
+  element: HTMLElement
+}
+
+let selectionCache: SelectionCacheEntry | null = null
+
+function selectionToChunk(selection: Selection): SelectionCacheEntry | null {
+  if (selection.isCollapsed) return null
 
   const text = selection.toString().replace(/\s+/g, ' ').trim()
   if (!text) return null
 
-  const anchor = selection.anchorNode?.parentElement
-  const element =
-    anchor?.closest<HTMLElement>(`${BLOCK_SELECTOR}, ${READABLE_SELECTOR}, .verse`) ??
-    anchor ??
-    document.body
+  const main = document.getElementById('main-content')
+  const anchor = selection.anchorNode
+  if (!main || !anchor || !main.contains(anchor)) return null
 
-  return { index: 0, text, element }
+  const parentEl =
+    anchor.nodeType === Node.TEXT_NODE
+      ? anchor.parentElement
+      : (anchor as HTMLElement)
+  if (!parentEl) return null
+
+  const element =
+    parentEl.closest<HTMLElement>(`${BLOCK_SELECTOR}, ${READABLE_SELECTOR}, .verse`) ??
+    parentEl
+
+  return { text, element }
+}
+
+/** Keep last in-page highlight so toolbar clicks can still read it */
+export function updateSelectionCache(): void {
+  const selection = window.getSelection()
+  if (!selection) return
+  const chunk = selectionToChunk(selection)
+  if (chunk) selectionCache = chunk
+}
+
+export function clearSelectionCache(): void {
+  selectionCache = null
+}
+
+export function getSelectionChunk(): ReadChunk | null {
+  const selection = window.getSelection()
+  if (selection && !selection.isCollapsed) {
+    const live = selectionToChunk(selection)
+    if (live) return { index: 0, ...live }
+  }
+
+  if (selectionCache) {
+    return {
+      index: 0,
+      text: selectionCache.text,
+      element: selectionCache.element,
+    }
+  }
+
+  return null
 }
 
 export function clearChunkHighlights(root: HTMLElement) {
