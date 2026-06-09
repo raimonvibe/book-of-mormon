@@ -6,6 +6,8 @@ out/
 *.log
 .DS_Store
 
-# Source PDF (32MB) — run `npm run extract` locally after adding the PDF
+# Source PDFs — run `npm run extract` locally after adding the PDF
 bookofmormon00lamo_bw.pdf
+book_of_mormon_missionary_english.pdf
 data/bom-raw.txt
+data/missionary-raw.txt

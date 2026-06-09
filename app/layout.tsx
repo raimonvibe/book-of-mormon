@@ -22,8 +22,8 @@ export const metadata: Metadata = {
   },
   title: 'Book of Mormon Reader',
   description:
-    'Read the Book of Mormon — Lamoni Edition. Search scripture, browse books and chapters, light and dark themes.',
-  keywords: ['Book of Mormon', 'Scripture', 'Lamoni', 'Nephi', 'Alma'],
+    'Read the Book of Mormon — Missionary Edition (2025). Search scripture, browse books and chapters, light and dark themes.',
+  keywords: ['Book of Mormon', 'Scripture', 'Missionary Edition', 'Nephi', 'Alma'],
   applicationName: 'Book of Mormon Reader',
   manifest: '/manifest.json',
   icons: {
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Book of Mormon Reader',
     description:
-      'Read the Book of Mormon — Lamoni Edition with search, chapter navigation, and beautiful reading themes.',
+      'Read the Book of Mormon — Missionary Edition with search, chapter navigation, and beautiful reading themes.',
     url: siteUrl,
     siteName: 'Book of Mormon Reader',
     images: [
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Book of Mormon Reader',
     description:
-      'Read the Book of Mormon — Lamoni Edition with search, chapter navigation, and beautiful reading themes.',
+      'Read the Book of Mormon — Missionary Edition with search, chapter navigation, and beautiful reading themes.',
     images: ['/social.png'],
   },
 }

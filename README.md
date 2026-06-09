@@ -4,7 +4,7 @@
 
 **🔗 Live app:** [https://book-of-mormon-tan.vercel.app/](https://book-of-mormon-tan.vercel.app/)
 
-A beautiful, responsive **Next.js** web app for reading the **Book of Mormon** (Lamoni Edition). Browse all books and chapters, search every verse, and switch between warm **beige** and **dark brown** themes.
+A beautiful, responsive **Next.js** web app for reading the **Book of Mormon** (LDS Missionary Edition, 2025). Browse all books and chapters, search every verse, and switch between warm **beige** and **dark brown** themes.
 
 ---
 
@@ -21,9 +21,9 @@ A beautiful, responsive **Next.js** web app for reading the **Book of Mormon** (
 
 ## 📜 Source text
 
-Content is extracted from the **Lamoni Edition** (Reorganized Church of Jesus Christ of Latter Day Saints, 1917/1933), digitized from [Internet Archive](https://www.archive.org/details/bookofmormon00lamo).
+Content is extracted from the **Missionary Edition** (The Church of Jesus Christ of Latter-day Saints, 2025 print), using `book_of_mormon_missionary_english.pdf` in the project root.
 
-> **Note:** This edition uses **fewer, longer chapters** than the modern LDS edition (e.g. 1 Nephi has 7 chapters here, not 22). Numbering matches the source PDF.
+Standard **LDS chapter and verse numbering** (239 chapters, ~6,600 verses). Text is produced by `scripts/extract-missionary.py` via `pdftotext`, with footnote markers and column artifacts cleaned where possible.
 
 ---
 
@@ -47,13 +47,15 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ### Re-extract from PDF
 
-Place `bookofmormon00lamo_bw.pdf` in the project root, then:
+Place `book_of_mormon_missionary_english.pdf` in the project root, then:
 
 ```bash
 npm run extract
 ```
 
 This regenerates `data/book-of-mormon-data.json` and `data/search-index.json`.
+
+The legacy Lamoni Edition extractor is still available as `npm run extract:lamoni` (requires `bookofmormon00lamo_bw.pdf`).
 
 ### Production build
 

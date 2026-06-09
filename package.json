@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "extract": "python3 scripts/extract-bom.py",
+    "extract": "python3 scripts/extract-missionary.py",
+    "extract:lamoni": "python3 scripts/extract-bom.py",
     "clean-markers": "python3 scripts/extract-bom.py --clean",
     "clean-fragments": "python3 scripts/extract-bom.py --clean-fragments"
   },

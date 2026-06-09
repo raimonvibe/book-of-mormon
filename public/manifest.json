@@ -1,7 +1,7 @@
 {
   "name": "Book of Mormon Reader",
   "short_name": "Book of Mormon",
-  "description": "Read the Book of Mormon — Lamoni Edition with search and chapter navigation",
+  "description": "Read the Book of Mormon — Missionary Edition with search and chapter navigation",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f5f1e8",
