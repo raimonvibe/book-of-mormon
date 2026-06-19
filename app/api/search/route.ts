@@ -1,18 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
-
-interface SearchEntry {
-  bookId: string
-  bookName: string
-  chapterId: string
-  chapterNumber: string
-  reference: string
-  verse: string
-  text: string
-}
+import {
+  buildBookLookup,
+  parseSearchQuery,
+  searchEntries,
+  type BookMeta,
+  type SearchEntry,
+} from '@/lib/search'
 
 let cachedIndex: SearchEntry[] | null = null
+let cachedBooks: BookMeta[] | null = null
 
 function getIndex(): SearchEntry[] {
   if (!cachedIndex) {
@@ -22,22 +20,36 @@ function getIndex(): SearchEntry[] {
   return cachedIndex!
 }
 
+function getBooks(): BookMeta[] {
+  if (!cachedBooks) {
+    const filePath = path.join(process.cwd(), 'data', 'book-of-mormon-data.json')
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
+    cachedBooks = data.books.map((book: BookMeta) => ({
+      id: book.id,
+      name: book.name,
+      abbreviation: book.abbreviation,
+    }))
+  }
+  return cachedBooks!
+}
+
 export async function GET(request: NextRequest) {
-  const q = request.nextUrl.searchParams.get('q')?.trim().toLowerCase() ?? ''
+  const params = request.nextUrl.searchParams
+  const q = params.get('q')?.trim() ?? ''
+  const bookId = params.get('book')?.trim() || undefined
+  const limit = Math.min(Math.max(Number(params.get('limit') ?? 50), 1), 100)
+  const offset = Math.max(Number(params.get('offset') ?? 0), 0)
 
   if (q.length < 2) {
-    return NextResponse.json({ results: [] })
+    return NextResponse.json({ results: [], total: 0, parsedAs: 'text', query: q })
   }
 
-  const index = getIndex()
-  const words = q.split(/\s+/).filter(Boolean)
+  const bookLookup = buildBookLookup(getBooks())
+  const parsed = parseSearchQuery(q, bookLookup)
+  const response = searchEntries(getIndex(), parsed, { bookId, limit, offset })
 
-  const results = index
-    .filter((entry) => {
-      const haystack = entry.text.toLowerCase()
-      return words.every((w) => haystack.includes(w))
-    })
-    .slice(0, 100)
-
-  return NextResponse.json({ results, total: results.length })
+  return NextResponse.json({
+    ...response,
+    query: q,
+  })
 }

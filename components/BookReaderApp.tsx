@@ -17,6 +17,7 @@ import {
   findBookBySlug,
   parseSlugSegments,
 } from '@/lib/routes'
+import { parseVerseHash, verseHash } from '@/lib/verseHash'
 
 interface Chapter {
   id: string
@@ -52,6 +53,7 @@ export default function BookReaderApp() {
   const [view, setView] = useState<View>('overview')
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [highlightVerse, setHighlightVerse] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/bom-data')
@@ -105,6 +107,26 @@ export default function BookReaderApp() {
     window.dispatchEvent(new CustomEvent('read-aloud-stop'))
   }, [selectedChapterId, view, selectedBookId])
 
+  useEffect(() => {
+    const syncVerseFromHash = () => {
+      setHighlightVerse(parseVerseHash(window.location.hash))
+    }
+    syncVerseFromHash()
+    window.addEventListener('hashchange', syncVerseFromHash)
+    return () => window.removeEventListener('hashchange', syncVerseFromHash)
+  }, [selectedChapterId])
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+
   const selectedBook = data?.books.find((b) => b.id === selectedBookId) ?? null
   const selectedChapter =
     selectedBook?.chapters.find((c) => c.id === selectedChapterId) ?? null
@@ -121,12 +143,14 @@ export default function BookReaderApp() {
   }, [view, selectedBook, selectedChapter])
 
   const navigateTo = useCallback(
-    (bookId: string, chapterId: string) => {
+    (bookId: string, chapterId: string, verse?: string) => {
       const book = data?.books.find((b) => b.id === bookId)
       const chapter = book?.chapters.find((c) => c.id === chapterId)
       if (!book || !chapter) return
       setMenuOpen(false)
-      router.push(chapterPath(book, chapter))
+      setHighlightVerse(verse ?? null)
+      const path = `${chapterPath(book, chapter)}${verse ? verseHash(verse) : ''}`
+      router.push(path)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     },
     [data, router]
@@ -216,6 +240,7 @@ export default function BookReaderApp() {
         open={searchOpen}
         onClose={() => setSearchOpen(false)}
         onSelectResult={navigateTo}
+        books={data.books.map((book) => ({ id: book.id, name: book.name }))}
       />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
@@ -259,6 +284,7 @@ export default function BookReaderApp() {
               <ScriptureReader
                 bookName={selectedBook.name}
                 chapter={selectedChapter}
+                highlightVerse={highlightVerse}
                 onBackToChapters={() => router.push(bookPath(selectedBook))}
                 onPrevChapter={goPrev}
                 onNextChapter={goNext}

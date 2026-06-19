@@ -55,12 +55,24 @@ export default function AppHeader({
           <button
             onClick={onOpenSearch}
             aria-label={searchOpen ? 'Close search' : 'Search scripture'}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl font-sans text-sm transition-all
+            className="hidden md:flex items-center gap-3 min-w-[12rem] max-w-xs lg:max-w-sm flex-1 px-3 py-2 rounded-xl font-sans text-sm transition-all text-left
+              bg-white/70 hover:bg-white text-beige-600 border border-beige-300/80
+              dark:bg-brown-800/80 dark:hover:bg-brown-700 dark:text-brown-300 dark:border-brown-600/60"
+          >
+            <Search className="w-4 h-4 shrink-0" aria-hidden="true" />
+            <span className="truncate flex-1">Search scripture…</span>
+            <kbd className="hidden lg:inline font-sans text-[10px] px-1.5 py-0.5 rounded border border-beige-300/80 dark:border-brown-600 text-beige-500 dark:text-brown-400">
+              Ctrl K
+            </kbd>
+          </button>
+          <button
+            onClick={onOpenSearch}
+            aria-label={searchOpen ? 'Close search' : 'Search scripture'}
+            className="md:hidden flex items-center gap-2 px-3 py-2 rounded-xl font-sans text-sm transition-all
               bg-white/70 hover:bg-white text-beige-800
               dark:bg-brown-800/80 dark:hover:bg-brown-700 dark:text-brown-100"
           >
             <Search className="w-4 h-4" />
-            <span className="hidden md:inline">Search</span>
           </button>
           <ThemeToggle />
         </div>

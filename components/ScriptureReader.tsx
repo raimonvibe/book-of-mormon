@@ -1,7 +1,7 @@
 'use client'
 
 import { ChevronLeft, ChevronRight, Eye, EyeOff, List } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 interface Chapter {
   id: string
@@ -13,6 +13,7 @@ interface Chapter {
 interface ScriptureReaderProps {
   bookName: string
   chapter: Chapter
+  highlightVerse?: string | null
   onBackToChapters: () => void
   onPrevChapter?: () => void
   onNextChapter?: () => void
@@ -23,6 +24,7 @@ interface ScriptureReaderProps {
 export default function ScriptureReader({
   bookName,
   chapter,
+  highlightVerse,
   onBackToChapters,
   onPrevChapter,
   onNextChapter,
@@ -30,11 +32,38 @@ export default function ScriptureReader({
   hasNext,
 }: ScriptureReaderProps) {
   const [showVerseNumbers, setShowVerseNumbers] = useState(true)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const processedContent = useMemo(() => {
     if (showVerseNumbers) return chapter.content
     return chapter.content.replace(/<sup class="verse-num">\[\d+\]<\/sup>\s*/g, '')
   }, [chapter.content, showVerseNumbers])
+
+  useEffect(() => {
+    const container = contentRef.current
+    if (!container || !highlightVerse) return
+
+    const verses = Array.from(container.querySelectorAll('.verse'))
+    let target: Element | null = null
+
+    for (let i = 0; i < verses.length; i++) {
+      const verse = verses[i]
+      const num = verse.querySelector('.verse-num')?.textContent?.match(/\[(\d+)\]/)?.[1]
+      if (num === highlightVerse) {
+        target = verse
+        break
+      }
+    }
+
+    if (!target) return
+
+    target.classList.add('search-verse-highlight')
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+    return () => {
+      target?.classList.remove('search-verse-highlight')
+    }
+  }, [chapter.id, highlightVerse, processedContent])
 
   return (
     <article className="card-surface p-4 md:p-6 lg:p-10">
@@ -110,6 +139,7 @@ export default function ScriptureReader({
       </header>
 
       <div
+        ref={contentRef}
         className="prose max-w-none mb-8 text-base md:text-lg leading-relaxed text-beige-900 dark:text-brown-100"
         dangerouslySetInnerHTML={{ __html: processedContent }}
       />
