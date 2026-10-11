@@ -17,7 +17,7 @@ export default function LoadingScreen() {
             priority
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-beige-100/90 to-transparent dark:from-brown-950/90"
+            className="absolute inset-0 bg-linear-to-t from-beige-100/90 to-transparent dark:from-brown-950/90"
             aria-hidden="true"
           />
           <div className="absolute inset-0 flex items-center justify-center">

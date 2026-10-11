@@ -109,7 +109,7 @@ export default function ReadAloudToolbar() {
   if (!supported) return null
 
   return (
-    <FixedViewportLayer className="flex flex-col items-start gap-3 sm:bottom-6 sm:left-6 [&>*]:pointer-events-auto">
+    <FixedViewportLayer className="flex flex-col items-start gap-3 sm:bottom-6 sm:left-6 *:pointer-events-auto">
       <div data-read-aloud-ignore className="contents">
         <div role="status" aria-live="polite" className="sr-only">
           {statusMessage}
@@ -284,7 +284,7 @@ export default function ReadAloudToolbar() {
                         key={s}
                         type="button"
                         onClick={() => setRate(s)}
-                        className={`min-h-9 min-w-[3rem] rounded-lg px-2 text-xs font-medium font-sans transition-colors ${
+                        className={`min-h-9 min-w-12 rounded-lg px-2 text-xs font-medium font-sans transition-colors ${
                           rate === s
                             ? 'bg-beige-800 text-beige-50 dark:bg-brown-200 dark:text-brown-950'
                             : 'bg-beige-100 text-beige-800 hover:bg-beige-200 dark:bg-brown-800 dark:text-brown-100 dark:hover:bg-brown-700'
@@ -303,7 +303,7 @@ export default function ReadAloudToolbar() {
                   <select
                     value={voiceURI}
                     onChange={(e) => setVoiceURI(e.target.value)}
-                    className="w-full min-h-11 rounded-xl border border-beige-300 bg-white px-3 text-xs font-sans text-beige-900 focus:border-beige-600 focus:outline-none focus:ring-2 focus:ring-beige-400/30 dark:border-brown-600 dark:bg-brown-800 dark:text-brown-50 dark:focus:border-brown-400 dark:focus:ring-brown-400/30"
+                    className="w-full min-h-11 rounded-xl border border-beige-300 bg-white px-3 text-xs font-sans text-beige-900 focus:border-beige-600 focus:outline-hidden focus:ring-2 focus:ring-beige-400/30 dark:border-brown-600 dark:bg-brown-800 dark:text-brown-50 dark:focus:border-brown-400 dark:focus:ring-brown-400/30"
                     aria-label="Reading voice"
                   >
                     {voices.map((v) => (
@@ -379,7 +379,7 @@ export default function ReadAloudToolbar() {
           ) : (
             <Headphones className="relative h-6 w-6 text-beige-50 transition-transform group-hover:scale-105 dark:text-brown-100" />
           )}
-          <span className="absolute -right-1 -top-1 flex h-5 items-center rounded-full bg-white px-1.5 text-[9px] font-bold uppercase tracking-wide text-beige-800 shadow-sm dark:bg-brown-100 dark:text-brown-900">
+          <span className="absolute -right-1 -top-1 flex h-5 items-center rounded-full bg-white px-1.5 text-[9px] font-bold uppercase tracking-wide text-beige-800 shadow-xs dark:bg-brown-100 dark:text-brown-900">
             Listen
           </span>
         </button>

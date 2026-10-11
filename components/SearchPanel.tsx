@@ -174,7 +174,7 @@ export default function SearchPanel({
       aria-modal="true"
       aria-label="Search scripture"
     >
-      <div className="absolute inset-0 bg-black/45 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-xs" onClick={onClose} />
       <div className="relative w-full max-w-2xl card-surface p-4 md:p-5 max-h-[85vh] flex flex-col shadow-2xl ring-1 ring-beige-300/60 dark:ring-brown-600/50">
         <div className="flex items-start justify-between gap-3 mb-4">
           <div>
@@ -212,7 +212,7 @@ export default function SearchPanel({
               placeholder="Search by words or reference…"
               autoComplete="off"
               spellCheck={false}
-              className="w-full pl-10 pr-10 py-3 rounded-xl font-sans text-sm border outline-none focus:ring-2
+              className="w-full pl-10 pr-10 py-3 rounded-xl font-sans text-sm border outline-hidden focus:ring-2
                 bg-white border-beige-300 text-beige-900 focus:ring-beige-400
                 dark:bg-brown-900 dark:border-brown-600 dark:text-brown-50 dark:focus:ring-brown-500"
             />
@@ -234,7 +234,7 @@ export default function SearchPanel({
             id="search-book-filter"
             value={bookFilter}
             onChange={(e) => setBookFilter(e.target.value)}
-            className="px-3 py-3 rounded-xl font-sans text-sm border outline-none focus:ring-2 min-w-[9rem]
+            className="px-3 py-3 rounded-xl font-sans text-sm border outline-hidden focus:ring-2 min-w-36
               bg-white border-beige-300 text-beige-900 focus:ring-beige-400
               dark:bg-brown-900 dark:border-brown-600 dark:text-brown-50 dark:focus:ring-brown-500"
           >
@@ -247,7 +247,7 @@ export default function SearchPanel({
           </select>
         </div>
 
-        <div className="flex items-center justify-between gap-2 mb-2 min-h-[1.25rem]">
+        <div className="flex items-center justify-between gap-2 mb-2 min-h-5">
           {loading ? (
             <p className="font-sans text-xs text-beige-600 dark:text-brown-400 flex items-center gap-2">
               <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
