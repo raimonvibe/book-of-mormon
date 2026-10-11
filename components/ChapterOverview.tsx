@@ -50,7 +50,7 @@ export default function ChapterOverview({
                 className={`w-full aspect-square flex flex-col items-center justify-center rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-lg font-sans
                   ${
                     selectedChapterId === ch.id
-                      ? 'bg-gradient-to-br from-beige-400 to-beige-600 text-white shadow-lg scale-105 dark:from-brown-600 dark:to-brown-800'
+                      ? 'bg-linear-to-br from-beige-400 to-beige-600 text-white shadow-lg scale-105 dark:from-brown-600 dark:to-brown-800'
                       : 'bg-white/70 hover:bg-white text-beige-800 dark:bg-brown-800/60 dark:hover:bg-brown-700 dark:text-brown-100'
                   }`}
               >

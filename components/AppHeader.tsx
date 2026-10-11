@@ -33,7 +33,7 @@ export default function AppHeader({
           </button>
           <Link
             href="/"
-            className="flex items-center gap-3 min-w-0 rounded-xl transition-colors hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beige-600 dark:focus-visible:outline-brown-400"
+            className="flex items-center gap-3 min-w-0 rounded-xl transition-colors hover:opacity-90 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beige-600 dark:focus-visible:outline-brown-400"
             aria-label="The Book of Mormon — home"
           >
             <BookOpen
@@ -55,13 +55,13 @@ export default function AppHeader({
           <button
             onClick={onOpenSearch}
             aria-label={searchOpen ? 'Close search' : 'Search scripture'}
-            className="hidden md:flex items-center gap-3 min-w-[12rem] max-w-xs lg:max-w-sm flex-1 px-3 py-2 rounded-xl font-sans text-sm transition-all text-left
+            className="hidden md:flex items-center gap-3 min-w-48 max-w-xs lg:max-w-sm flex-1 px-3 py-2 rounded-xl font-sans text-sm transition-all text-left
               bg-white/70 hover:bg-white text-beige-600 border border-beige-300/80
               dark:bg-brown-800/80 dark:hover:bg-brown-700 dark:text-brown-300 dark:border-brown-600/60"
           >
             <Search className="w-4 h-4 shrink-0" aria-hidden="true" />
             <span className="truncate flex-1">Search scripture…</span>
-            <kbd className="hidden lg:inline font-sans text-[10px] px-1.5 py-0.5 rounded border border-beige-300/80 dark:border-brown-600 text-beige-500 dark:text-brown-400">
+            <kbd className="hidden lg:inline font-sans text-[10px] px-1.5 py-0.5 rounded-sm border border-beige-300/80 dark:border-brown-600 text-beige-500 dark:text-brown-400">
               Ctrl K
             </kbd>
           </button>

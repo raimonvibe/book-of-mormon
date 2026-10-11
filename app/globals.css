@@ -1,6 +1,257 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-serif: Merriweather, Georgia, serif;
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-display: Playfair Display, Georgia, serif;
+
+  --background-image-theme-light: linear-gradient(
+    135deg,
+    #faf8f3 0%,
+    #f5f1e8 20%,
+    #e8dcc8 45%,
+    #d4c5a9 70%,
+    #e8dcc8 90%,
+    #f5f1e8 100%
+  );
+  --background-image-theme-dark: linear-gradient(
+    135deg,
+    #1a120c 0%,
+    #2c1f14 25%,
+    #3d2b1f 50%,
+    #2c1f14 75%,
+    #1a120c 100%
+  );
+  --background-image-card-light: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(245, 241, 232, 0.9) 50%,
+    rgba(232, 220, 200, 0.85) 100%
+  );
+  --background-image-card-dark: linear-gradient(
+    145deg,
+    rgba(61, 43, 31, 0.95) 0%,
+    rgba(44, 31, 20, 0.92) 50%,
+    rgba(35, 25, 18, 0.95) 100%
+  );
+
+  --color-beige-50: #faf8f3;
+  --color-beige-100: #f5f1e8;
+  --color-beige-200: #e8dcc8;
+  --color-beige-300: #d4c5a9;
+  --color-beige-400: #c5b494;
+  --color-beige-500: #b5a280;
+  --color-beige-600: #9d8a6b;
+  --color-beige-700: #7d6e56;
+  --color-beige-800: #5e5342;
+  --color-beige-900: #3f382d;
+
+  --color-brown-50: #f7f3ef;
+  --color-brown-100: #ebe3d9;
+  --color-brown-200: #d4c4b0;
+  --color-brown-300: #b89d82;
+  --color-brown-400: #9a7d5f;
+  --color-brown-500: #7d6349;
+  --color-brown-600: #634d3a;
+  --color-brown-700: #4d3b2e;
+  --color-brown-800: #3d2b1f;
+  --color-brown-900: #2c1f14;
+  --color-brown-950: #1a120c;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility card-surface {
+  @apply backdrop-blur-xs rounded-2xl shadow-xl border bg-card-light border-beige-300/60;
+
+  html.dark & {
+    @apply bg-card-dark border-brown-700/50;
+  }
+}
+
+@utility dark {
+  &html .card-surface {
+    @apply bg-card-dark border-brown-700/50;
+  }
+
+  &html .verse-num {
+    @apply text-brown-400;
+  }
+
+  &html mark.search-hit {
+    @apply bg-amber-700/50 text-brown-50;
+  }
+
+  &html .search-verse-highlight {
+    @apply bg-amber-700/35 ring-amber-500/40;
+  }
+
+  &html .read-aloud-active {
+    @apply bg-amber-700/35 ring-amber-500/35;
+  }
+
+  &html .listen-panel-header {
+    background: linear-gradient(135deg, #634d3a 0%, #4d3b2e 50%, #2c1f14 100%);
+  }
+
+  &html .listen-play-btn {
+    background: linear-gradient(135deg, #9a7d5f 0%, #7d6349 50%, #634d3a 100%);
+  }
+
+  &html .listen-fab-idle {
+    background: linear-gradient(135deg, #4d3b2e 0%, #2c1f14 100%);
+    box-shadow: 0 6px 28px rgba(44, 31, 20, 0.45);
+  }
+
+  &html .listen-progress-bar {
+    background: linear-gradient(90deg, #b89d82 0%, #7d6349 100%);
+  }
+
+  &html .listen-range {
+    accent-color: #b89d82;
+  }
+}
+
+@utility verse-num {
+  @apply font-sans font-semibold text-xs mr-1 select-none text-beige-600;
+
+  html.dark & {
+    @apply text-brown-400;
+  }
+}
+
+@utility verse {
+  @apply block mb-3 leading-relaxed;
+}
+
+@utility search-hit {
+  &mark {
+    @apply rounded-sm px-0.5 bg-amber-200/80 text-beige-900 font-medium;
+  }
+
+  html.dark &mark {
+    @apply bg-amber-700/50 text-brown-50;
+  }
+}
+
+@utility search-verse-highlight {
+  @apply rounded-lg bg-amber-200/70 ring-2 ring-amber-500/50 -mx-1 px-1;
+  transition:
+    background-color 0.4s ease,
+    box-shadow 0.4s ease;
+
+  html.dark & {
+    @apply bg-amber-700/35 ring-amber-500/40;
+  }
+}
+
+@utility read-aloud-active {
+  @apply rounded-lg bg-amber-200/60 ring-2 ring-amber-500/40;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+
+  html.dark & {
+    @apply bg-amber-700/35 ring-amber-500/35;
+  }
+}
+
+@utility fixed-viewport-anchor {
+  position: fixed;
+  left: max(1rem, env(safe-area-inset-left, 0px));
+  bottom: calc(
+    max(1rem, env(safe-area-inset-bottom, 0px)) + var(--vv-offset-bottom, 0px)
+  );
+  right: auto;
+  top: auto;
+  max-width: min(100vw - 2rem, 22rem);
+}
+
+@utility fixed-viewport-panel {
+  width: min(calc(100vw - 2rem), 22rem);
+  max-height: min(
+    70dvh,
+    calc(
+      var(--vv-height, 100dvh) - 7rem - env(safe-area-inset-top, 0px) -
+        var(--vv-offset-bottom, 0px)
+    )
+  );
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@utility listen-panel-header {
+  background: linear-gradient(135deg, #7d6e56 0%, #5e5342 50%, #3f382d 100%);
+
+  html.dark & {
+    background: linear-gradient(135deg, #634d3a 0%, #4d3b2e 50%, #2c1f14 100%);
+  }
+}
+
+@utility listen-play-btn {
+  background: linear-gradient(135deg, #b5a280 0%, #9d8a6b 50%, #7d6e56 100%);
+
+  html.dark & {
+    background: linear-gradient(135deg, #9a7d5f 0%, #7d6349 50%, #634d3a 100%);
+  }
+}
+
+@utility listen-fab-idle {
+  background: linear-gradient(135deg, #5e5342 0%, #3f382d 100%);
+  box-shadow: 0 6px 28px rgba(94, 83, 66, 0.35);
+
+  html.dark & {
+    background: linear-gradient(135deg, #4d3b2e 0%, #2c1f14 100%);
+    box-shadow: 0 6px 28px rgba(44, 31, 20, 0.45);
+  }
+}
+
+@utility listen-progress-bar {
+  background: linear-gradient(90deg, #c5b494 0%, #9d8a6b 100%);
+
+  html.dark & {
+    background: linear-gradient(90deg, #b89d82 0%, #7d6349 100%);
+  }
+}
+
+@utility listen-range {
+  accent-color: #9d8a6b;
+
+  html.dark & {
+    accent-color: #b89d82;
+  }
+}
+
+@utility listen-wave {
+  height: 8px;
+}
+
+@utility listen-wave-active {
+  animation: listen-wave 0.9s ease-in-out infinite;
+}
+
+@utility animate-listen-panel-in {
+  animation: listen-panel-in 0.28s ease-out;
+}
 
 @layer base {
   html {
@@ -47,127 +298,6 @@
 } */
 
 @layer components {
-  .card-surface {
-    @apply backdrop-blur-sm rounded-2xl shadow-xl border bg-card-light border-beige-300/60;
-  }
-
-  html.dark .card-surface {
-    @apply bg-card-dark border-brown-700/50;
-  }
-
-  .verse-num {
-    @apply font-sans font-semibold text-xs mr-1 select-none text-beige-600;
-  }
-
-  html.dark .verse-num {
-    @apply text-brown-400;
-  }
-
-  .verse {
-    @apply block mb-3 leading-relaxed;
-  }
-
-  mark.search-hit {
-    @apply rounded px-0.5 bg-amber-200/80 text-beige-900 font-medium;
-  }
-
-  html.dark mark.search-hit {
-    @apply bg-amber-700/50 text-brown-50;
-  }
-
-  .search-verse-highlight {
-    @apply rounded-lg bg-amber-200/70 ring-2 ring-amber-500/50 -mx-1 px-1;
-    transition: background-color 0.4s ease, box-shadow 0.4s ease;
-  }
-
-  html.dark .search-verse-highlight {
-    @apply bg-amber-700/35 ring-amber-500/40;
-  }
-
-  .read-aloud-active {
-    @apply rounded-lg bg-amber-200/60 ring-2 ring-amber-500/40;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  html.dark .read-aloud-active {
-    @apply bg-amber-700/35 ring-amber-500/35;
-  }
-
-  .fixed-viewport-anchor {
-    position: fixed;
-    left: max(1rem, env(safe-area-inset-left, 0px));
-    bottom: calc(
-      max(1rem, env(safe-area-inset-bottom, 0px)) + var(--vv-offset-bottom, 0px)
-    );
-    right: auto;
-    top: auto;
-    max-width: min(100vw - 2rem, 22rem);
-  }
-
-  .fixed-viewport-panel {
-    width: min(calc(100vw - 2rem), 22rem);
-    max-height: min(
-      70dvh,
-      calc(
-        var(--vv-height, 100dvh) - 7rem - env(safe-area-inset-top, 0px) -
-          var(--vv-offset-bottom, 0px)
-      )
-    );
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .listen-panel-header {
-    background: linear-gradient(135deg, #7d6e56 0%, #5e5342 50%, #3f382d 100%);
-  }
-
-  html.dark .listen-panel-header {
-    background: linear-gradient(135deg, #634d3a 0%, #4d3b2e 50%, #2c1f14 100%);
-  }
-
-  .listen-play-btn {
-    background: linear-gradient(135deg, #b5a280 0%, #9d8a6b 50%, #7d6e56 100%);
-  }
-
-  html.dark .listen-play-btn {
-    background: linear-gradient(135deg, #9a7d5f 0%, #7d6349 50%, #634d3a 100%);
-  }
-
-  .listen-fab-idle {
-    background: linear-gradient(135deg, #5e5342 0%, #3f382d 100%);
-    box-shadow: 0 6px 28px rgba(94, 83, 66, 0.35);
-  }
-
-  html.dark .listen-fab-idle {
-    background: linear-gradient(135deg, #4d3b2e 0%, #2c1f14 100%);
-    box-shadow: 0 6px 28px rgba(44, 31, 20, 0.45);
-  }
-
-  .listen-progress-bar {
-    background: linear-gradient(90deg, #c5b494 0%, #9d8a6b 100%);
-  }
-
-  html.dark .listen-progress-bar {
-    background: linear-gradient(90deg, #b89d82 0%, #7d6349 100%);
-  }
-
-  .listen-range {
-    accent-color: #9d8a6b;
-  }
-
-  html.dark .listen-range {
-    accent-color: #b89d82;
-  }
-
-  .listen-wave {
-    height: 8px;
-  }
-
-  .listen-wave-active {
-    animation: listen-wave 0.9s ease-in-out infinite;
-  }
-
   @keyframes listen-wave {
     0%,
     100% {
@@ -193,9 +323,5 @@
       opacity: 1;
       transform: translateY(0) scale(1);
     }
-  }
-
-  .animate-listen-panel-in {
-    animation: listen-panel-in 0.28s ease-out;
   }
 }

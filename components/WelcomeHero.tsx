@@ -29,7 +29,7 @@ export default function WelcomeHero({
             className="object-cover object-[center_65%]"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-beige-100 via-beige-100/20 to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-beige-100/95 dark:from-brown-950 dark:via-brown-950/30 dark:to-brown-950/95"
+            className="absolute inset-0 bg-linear-to-t from-beige-100 via-beige-100/20 to-transparent md:bg-linear-to-r md:from-transparent md:via-transparent md:to-beige-100/95 dark:from-brown-950 dark:via-brown-950/30 dark:to-brown-950/95"
             aria-hidden="true"
           />
         </div>

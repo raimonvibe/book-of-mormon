@@ -6,23 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "extract": "python3 scripts/extract-missionary.py",
     "extract:lamoni": "python3 scripts/extract-bom.py",
     "clean-markers": "python3 scripts/extract-bom.py --clean",
     "clean-fragments": "python3 scripts/extract-bom.py --clean-fragments"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^24.13.6",
-    "@types/react": "^18.3.31",
-    "@types/react-dom": "^18.3.7",
-    "autoprefixer": "^10.6.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "lucide-react": "^1.49.0",
-    "next": "^15.5.25",
+    "next": "^16.4.0",
     "postcss": "^8.5.28",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "tailwindcss": "^3.4.19",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.0"
   }
 }
