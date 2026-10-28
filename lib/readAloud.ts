@@ -180,9 +180,77 @@ export function highlightChunk(element: HTMLElement) {
   element.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
+/**
+ * Joke and character voices the operating system ships alongside real ones.
+ * Apple's "Novelty" set (Bubbles, Junior, Zarvox, Bad News…) all report as
+ * en-US, so filtering by language does not remove them — they have to be
+ * named. The second block is the Eloquence-era character set added in recent
+ * macOS/iOS. Same list as bible-old-and-new-testament and bible-wonders.
+ */
+const NOVELTY_VOICE_NAMES = new Set([
+  'albert',
+  'bad news',
+  'bahh',
+  'bells',
+  'boing',
+  'bubbles',
+  'cellos',
+  'deranged',
+  'fred',
+  'good news',
+  'hysterical',
+  'jester',
+  'junior',
+  'kathy',
+  'organ',
+  'pipe organ',
+  'princess',
+  'ralph',
+  'superstar',
+  'trinoids',
+  'whisper',
+  'wobble',
+  'zarvox',
+  // character voices
+  'eddy',
+  'flo',
+  'grandma',
+  'grandpa',
+  'reed',
+  'rocko',
+  'sandy',
+  'shelley',
+])
+
+/** "Grandma (Deutsch (Deutschland))" → "grandma"; "Microsoft David - English" → "microsoft david" */
+function baseVoiceName(name: string): string {
+  return name.split('(')[0].split(' - ')[0].trim().toLowerCase()
+}
+
+/**
+ * "com.apple.speech.synthesis.voice.Bubbles" → "bubbles".
+ *
+ * Safari on iPhone, iPad and Mac can show a voice's name in the device's own
+ * language, so the name alone lets a translated "Bubbles" through. The
+ * voiceURI keeps Apple's English identifier whatever the device language.
+ */
+function voiceURIName(uri: string): string {
+  return (uri ?? '').split('.').pop()?.trim().toLowerCase() ?? ''
+}
+
+export function isNoveltyVoice(voice: SpeechSynthesisVoice): boolean {
+  if (/eloquence/i.test(voice.name) || /eloquence/i.test(voice.voiceURI ?? '')) return true
+  return (
+    NOVELTY_VOICE_NAMES.has(baseVoiceName(voice.name)) ||
+    NOVELTY_VOICE_NAMES.has(voiceURIName(voice.voiceURI))
+  )
+}
+
+/** English reading voices, best first. Novelty voices never get in, not even as a fallback. */
 export function filterVoices(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice[] {
-  const english = voices.filter((v) => v.lang.startsWith('en'))
-  const pool = english.length > 0 ? english : voices
+  const genuine = voices.filter((v) => !isNoveltyVoice(v))
+  const english = genuine.filter((v) => v.lang.startsWith('en'))
+  const pool = english.length > 0 ? english : genuine
 
   return [...pool].sort((a, b) => {
     const score = (v: SpeechSynthesisVoice) => {
