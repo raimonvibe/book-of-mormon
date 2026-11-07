@@ -2,6 +2,12 @@
 
 # 📖 Book of Mormon Reader
 
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+
 **🔗 Live app:** [https://book-of-mormon-tan.vercel.app/](https://book-of-mormon-tan.vercel.app/)
 
 A beautiful, responsive **Next.js** web app for reading the **Book of Mormon** (LDS Missionary Edition, 2025). Browse all books and chapters, search every verse, and switch between warm **beige** and **dark brown** themes.
