@@ -13,11 +13,11 @@
     "clean-fragments": "python3 scripts/extract-bom.py --clean-fragments"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.3.4",
+    "@tailwindcss/postcss": "^4.3.5",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "lucide-react": "^1.68.0",
+    "lucide-react": "^1.70.0",
     "next": "^16.4.5",
     "postcss": "^8.5.32",
     "react": "^19.3.0",
